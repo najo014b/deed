@@ -1,2 +1,2 @@
-# deed
+# about me
 way of life
