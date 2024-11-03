@@ -1,0 +1,314 @@
+import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: HabitTrackerScreen(),
+    );
+  }
+}
+
+class HabitTrackerScreen extends StatefulWidget {
+  @override
+  HabitTrackerScreenState createState() => HabitTrackerScreenState();
+}
+
+class HabitTrackerScreenState extends State<HabitTrackerScreen> {
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          // Profile Header
+          Container(
+            color: Color(0xFFB3D2F2), // Light blue background color
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CircleAvatar(
+                  radius: 25,
+                  backgroundColor: Colors.grey[300],
+                  child: Icon(Icons.person, size: 40, color: Colors.white),
+                ),
+                Text(
+                  'Deeds',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontFamily: 'Serif',
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                Row(
+                  children: [
+                    Icon(Icons.emoji_events, color: Colors.amber),
+                    SizedBox(width: 8),
+                    Icon(Icons.attach_money, color: Colors.pinkAccent),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          
+
+          // Tabs for Deeds, Habits, Events
+          Container(
+            color: Color(0xFFB47BC8), // Purple background for tabs
+            //padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+              
+              ElevatedButton(
+                onPressed: () {
+                  print("Basic Button Pressed");
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFB47BC8), // New way to set background color
+                  foregroundColor: Colors.white, // Text color
+                  padding: EdgeInsets.symmetric(horizontal: 200, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text("Deeds"),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SecondRoute()),
+                );
+                  print("Basic Button Pressed");
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFB47BC8), // New way to set background color
+                  foregroundColor: Colors.white, // Text color
+                  padding: EdgeInsets.symmetric(horizontal: 200, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text("Habbits"),
+              ),
+              SizedBox(height: 10),
+           ElevatedButton(
+                onPressed: () {
+                  print("Styled Button Pressed");
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFB47BC8), // New way to set background color
+                  foregroundColor: Colors.white, // Text color
+                  padding: EdgeInsets.symmetric(horizontal: 200, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text("Events"),
+              ),
+              SizedBox(height: 10),
+              /*  IconButton(
+                      icon: Icon(Icons.notifications, color: Colors.white),
+                      onPressed: () {
+                        // Handle notification button press
+                      },
+                ),*/
+                
+               // buildTabButton("Deeds"),
+               // buildTabButton("Habits"),
+               // buildTabButton("Events"),
+              ],
+            ),
+          ),
+
+          // Calendar
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TableCalendar(
+              firstDay: DateTime.utc(2020, 1, 1),
+              lastDay: DateTime.utc(2030, 12, 31),
+              focusedDay: _focusedDay,
+              calendarFormat: _calendarFormat,
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+              onDaySelected: (selectedDay, focusedDay) {
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay;
+                });
+              },
+              onFormatChanged: (format) {
+                if (_calendarFormat != format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                }
+              },
+              headerStyle: HeaderStyle(
+                formatButtonVisible: false,
+                titleCentered: true,
+              ),
+              calendarStyle: CalendarStyle(
+                todayDecoration: BoxDecoration(
+                  color: Colors.purple,
+                  shape: BoxShape.circle,
+                ),
+                selectedDecoration: BoxDecoration(
+                  color: Colors.pink,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          ),
+
+          // Build habits button
+          Container(
+            width: double.infinity,
+            color: Color(0xFFB47BC8),
+            padding: EdgeInsets.all(12),
+            child: Text(
+              'Build habits',
+              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+          ),
+
+          // Habit input section
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                // Habit text input
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Type the habit you want to build',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10),
+                
+                // Days button
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(12),
+                        color: Color(0xFFB47BC8),
+                        child: Text(
+                          'days',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 10),
+
+                // Time Slots
+                SizedBox(
+                  height: 150,
+                  child: ListView(
+                    children: [
+                      for (var i = 8; i <= 14; i++)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: Text(
+                            '$i:00 am',
+                            style: TextStyle(color: Colors.grey[700]),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 10),
+
+                // Save button
+                ElevatedButton(
+                  onPressed: () {
+                    // Define save action
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFB47BC8),
+                    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                  ),
+                  child: Text('save', style: TextStyle(color: Colors.white, fontSize: 16)),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+
+      // Bottom Navigation Bar
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color(0xFFB3D2F2), // Light blue background
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.videogame_asset),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle),
+            label: '',
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Helper method to build tab buttons
+  Widget buildTabButton(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      child: Text(
+        title,
+        style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
+class SecondRoute extends StatelessWidget {
+  const SecondRoute({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Second Route'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Go back!'),
+        ),
+      ),
+    );
+  }
+}
